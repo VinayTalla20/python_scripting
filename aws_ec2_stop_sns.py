@@ -3,6 +3,8 @@ import boto3
 ec2 = boto3.client('ec2')
 mail = boto3.client('sns')
 
+sns_arn = "arn:aws:sns:ap-south-1:753809741141:EC2_Running_Topic"
+
 ids = []
 states = []
 states_id = []
@@ -67,15 +69,14 @@ if 'stopped' in states:
 
             msg = f'Alert! An EC2 Instance with Tags = {ec2_tags} is Stopped'
             print(msg)
-            ec2_tags.clear()
 
-            sns_arn = 'arn:aws:sns:ap-south-1:753809741141:EC2_Running_Topic'
 
             send_mail = mail.publish(
-                TopicArn=sns_arn,
-                Message=f'Your EC2 instance with Id  {ec2_ids[l]} with Tags = {ec2_tags} as Stopped',
-                Subject=f'Alert! An EC2 Instance with Tags = {ec2_tags} is Stopped'
+                TopicArn= sns_arn,
+                Message= f'Your EC2 instance with Id  {ec2_ids[l]} with Tags = {ec2_tags} as Stopped',
+                Subject= f'Alert! An EC2 Instance with Tags = {ec2_tags} is Stopped',
             )
+            ec2_tags.clear()
             print(" Mail has Sent Successfully ")
             l += 1
 
