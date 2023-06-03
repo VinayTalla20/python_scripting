@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: exception
+spec:
+  schedule: "30 10 * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 60
+      template:
+        spec:
+          containers:
+          - name: exception
+            image: 
+            env:
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: CLIENT_ID
+                  name: aad-details
+                  optional: false
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: CLIENT_SECRET
+                  name: aad-details
+                  optional: false
+            - name: TENANT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: TENANT_ID
+                  name: aad-details
+                  optional: false
+            - name: CRON_PASSWD
+              valueFrom:
+                secretKeyRef:
+                  key: CRON_PASSWD
+                  name: aad-details
+                  optional: false
+            - name: WORKSPACE_ID
+              valueFrom:
+                secretKeyRef:
+                  key: WORKSPACE_ID
+                  name: aad-details
+                  optional: false
+          restartPolicy: Never
